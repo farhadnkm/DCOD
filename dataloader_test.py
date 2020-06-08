@@ -1,3 +1,12 @@
+from torch.utils.data import DataLoader
+import torchvision.transforms as transforms
+import matplotlib
+matplotlib.use("TkAgg")
+import matplotlib.pyplot as plt
+from utils.data import HologramDataset
+from utils.transforms import RandomCrop, ToTensor, GaussianNoise
+
+
 def show_batch(dataloader, batch_index, sample_index):
 	fig, axes = plt.subplots(1, 4)
 
@@ -12,6 +21,7 @@ def show_batch(dataloader, batch_index, sample_index):
 			break
 
 	plt.show()
+
 def show_batch_single_channel(dataloader, batch_index, sample_index):
 	fig, axes = plt.subplots(1, 2)
 
@@ -25,12 +35,13 @@ def show_batch_single_channel(dataloader, batch_index, sample_index):
 
 	plt.show()
 
-AMP_DIR = 'D:\Research_data\pap_smear_dataset\Dataset\Amplitude'
-PH_DIR = 'D:\Research_data\pap_smear_dataset\Dataset\Phase'
-AMP_DIR_GT = 'D:\Research_data\pap_smear_dataset\Dataset\Amplitude_GT'
-PH_DIR_GT = 'D:\Research_data\pap_smear_dataset\Dataset\Phase_GT'
-
 if __name__ == '__main__':  # <== this line is necessary
+
+	AMP_DIR = 'D:\Research_data\pap_smear_dataset\Dataset\Amplitude'
+	PH_DIR = 'D:\Research_data\pap_smear_dataset\Dataset\Phase'
+	AMP_DIR_GT = 'D:\Research_data\pap_smear_dataset\Dataset\Amplitude_GT'
+	PH_DIR_GT = 'D:\Research_data\pap_smear_dataset\Dataset\Phase_GT'
+
 	transforms_train = transforms.Compose([
 		RandomCrop(size=128),
 		ToTensor()
