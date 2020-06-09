@@ -65,7 +65,7 @@ if __name__ == '__main__':
 	loss_criterion = nn.MSELoss()
 
 	# optimizer = optim.SGD(model.parameters(), lr=0.0002, momentum=0.9)
-	optimizer = optim.Adam(model.parameters(), lr=1e-4, betas=(0.5, 0.999))
+	optimizer = optim.Adam(params=filter(lambda p: p.requires_grad, model.parameters()), lr=1e-4, betas=(0.5, 0.999))
 
 
 

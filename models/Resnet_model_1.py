@@ -168,7 +168,7 @@ class ResNet(nn.Module):
         output = self.residual_blocks(output)  # (N, n_channels, w, h)
         output = self.conv_block2(output)  # (N, n_channels, w, h)
         output = output + residual  # (N, n_channels, w, h)
-        output = self.subpixel_convolutional_blocks(output)  # (N, n_channels, w * scaling factor, h * scaling factor)
+        #output = self.subpixel_convolutional_blocks(output)  # (N, n_channels, w * scaling factor, h * scaling factor)
         out_imgs = self.conv_block3(output)  # (N, 3, w * scaling factor, h * scaling factor)
 
         return out_imgs
