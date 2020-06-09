@@ -46,7 +46,7 @@ def train(config, model, loss_criterion, optimizer, epoch, log):
 
 	return new_log
 
-def main(config):
+def run(config):
 	epochs = int(config.iterations // len(config.data_loader) + 1)
 
 	if os.path.exists(os.path.join(config.log_dir, config.log_name)):

@@ -130,7 +130,7 @@ class ResNet(nn.Module):
     The SRResNet, as defined in the paper.
     """
 
-    def __init__(self, large_kernel_size=9, small_kernel_size=3, n_channels=64, n_blocks=16):
+    def __init__(self, large_kernel_size=9, small_kernel_size=3, in_channels=1, n_channels=64, n_blocks=16):
         """
         :param large_kernel_size: kernel size of the first and last convolutions which transform the inputs and outputs
         :param small_kernel_size: kernel size of all convolutions in-between, i.e. those in the residual and subpixel convolutional blocks
@@ -141,7 +141,7 @@ class ResNet(nn.Module):
         super(ResNet, self).__init__()
 
         # The first convolutional block
-        self.conv_block1 = ConvolutionalBlock(in_channels=3, out_channels=n_channels, kernel_size=large_kernel_size,
+        self.conv_block1 = ConvolutionalBlock(in_channels=in_channels, out_channels=n_channels, kernel_size=large_kernel_size,
                                               batch_norm=False, activation='PReLu')
 
         # A sequence of n_blocks residual blocks, each containing a skip-connection across the block
@@ -154,21 +154,21 @@ class ResNet(nn.Module):
                                               batch_norm=True, activation=None)
 
         # The last convolutional block
-        self.conv_block3 = ConvolutionalBlock(in_channels=n_channels, out_channels=3, kernel_size=large_kernel_size,
+        self.conv_block3 = ConvolutionalBlock(in_channels=n_channels, out_channels=in_channels, kernel_size=large_kernel_size,
                                               batch_norm=False, activation='Tanh')
 
-    def forward(self, lr_imgs):
+    def forward(self, imgs):
         """
         Forward prop.
         :param lr_imgs: low-resolution input images, a tensor of size (N, 3, w, h)
         :return: super-resolution output images, a tensor of size (N, 3, w * scaling factor, h * scaling factor)
         """
-        output = self.conv_block1(lr_imgs)  # (N, 3, w, h)
+        output = self.conv_block1(imgs)  # (N, 3, w, h)
         residual = output  # (N, n_channels, w, h)
         output = self.residual_blocks(output)  # (N, n_channels, w, h)
         output = self.conv_block2(output)  # (N, n_channels, w, h)
         output = output + residual  # (N, n_channels, w, h)
         output = self.subpixel_convolutional_blocks(output)  # (N, n_channels, w * scaling factor, h * scaling factor)
-        sr_imgs = self.conv_block3(output)  # (N, 3, w * scaling factor, h * scaling factor)
+        out_imgs = self.conv_block3(output)  # (N, 3, w * scaling factor, h * scaling factor)
 
-        return sr_imgs
+        return out_imgs
