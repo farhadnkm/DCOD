@@ -7,7 +7,7 @@ import os
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
-import simulation_utils as utils
+import simulator.simulation_utils as utils
 
 
 def getkey(fname):
@@ -35,7 +35,7 @@ object_funcs = []
 print('Recording ground truth images by index')
 for i in range(len(amps)):
 	amp = np.asarray(Image.open(os.path.join(PATH_AMP, amps[i]))).astype('float32')
-	ph = tiff.imread(os.path.join(PATH_PH, phs[i])).astype('float32') / 2000
+	ph = tiff.imread(os.path.join(PATH_PH, phs[i])).astype('float32') / 2200
 	x, y = round(amp.shape[0] * scale), round(amp.shape[1] * scale)
 
 	amp = cv2.resize(amp, dsize=(x, y))

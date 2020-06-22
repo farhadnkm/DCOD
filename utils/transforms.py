@@ -3,7 +3,6 @@ import random
 import numbers
 import numpy as np
 
-
 class GaussianNoise(object):
 	def __init__(self, mean=0., std=1., key='input'):
 		self.std = std
@@ -32,7 +31,8 @@ class RandomCrop(object):
 	def __call__(self, img):
 		input = img[self.keys[0]]
 		output = img[self.keys[1]]
-		_, w, h = input.shape
+
+		c, w, h = input.shape
 		th, tw = self.size
 		if w == tw and h == th:
 			i, j = 0, 0

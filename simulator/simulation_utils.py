@@ -1,4 +1,6 @@
 import numpy as np
+from numpy.fft import fft2, ifft2, fftshift, ifftshift
+import math
 
 class Simulator:
 	def __init__(self, shape, delta_x, delta_y, w):
@@ -11,6 +13,7 @@ class Simulator:
 		self.w = w
 		self.deltaf_x = (1 / shape[0]) / delta_x
 		self.deltaf_y = (1 / shape[1]) / delta_y
+		self.delta = math.sqrt(self.delta_x**2 + self.delta_y**2)
 		self.shifts = []
 
 	def propagator(self, z):
@@ -20,24 +23,12 @@ class Simulator:
 					 + 0j
 		return np.exp(2j * np.pi * z * np.sqrt(phase_term))
 
-	def fft2(self, mat):
-		return np.fft.fft2(mat)
-
-	def ifft2(self, mat):
-		return np.fft.ifft2(mat)
-
-	def fftshift(self, mat):
-		return np.fft.fftshift(mat)
-
-	def ifftshift(self, mat):
-		return np.fft.ifftshift(mat)
-
 	def reconstruct(self, initializer, z):
 		prop = self.propagator(z)
 
-		init_hologram = self.ifftshift(self.fft2(self.fftshift(initializer)))
-		prop_hologram = init_hologram * np.conj(prop)
-		image = self.fftshift(self.ifft2(self.ifftshift(prop_hologram)))
+		init_hologram = ifftshift(fft2(fftshift(initializer)))# * self.delta**2
+		prop_hologram = init_hologram * prop
+		image = fftshift(ifft2(ifftshift(prop_hologram)))# / self.delta**2
 
 		return image
 
