@@ -60,7 +60,7 @@ class DeepDecoder(nn.Module):
 
 class DeepDecoder3(nn.Module):
 	def __init__(self, layers_channels, out_channels, kernel_sizes, pad_mode='reflection', upsample_mode='bilinear',
-				 activation_func=nn.ReLU(), bn_affine=True):
+				 activation_func=nn.ReLU(), out_activation=nn.Sigmoid(), bn_affine=True):
 		super(DeepDecoder3, self).__init__()
 
 		layers = []
@@ -80,7 +80,8 @@ class DeepDecoder3(nn.Module):
 		layers.append(nn.BatchNorm2d(layers_channels[-1], affine=bn_affine))
 
 		layers.append(Conv2d_pad(layers_channels[-1], out_channels, kernel_sizes[-1], 1, pad_mode=pad_mode))
-		layers.append(nn.Sigmoid())
+		if out_activation is not None:
+			layers.append(out_activation)
 
 		self.deep_decoder = nn.Sequential(*layers)
 

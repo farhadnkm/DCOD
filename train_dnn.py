@@ -33,7 +33,6 @@ def train(config, iter, log):
 
 	result.data = torch.from_numpy(est_hol_amp.astype('float32')).to(config.device)'''
 	target = torch.from_numpy(config.dataset.hologram_amp).unsqueeze(0).unsqueeze(0).to(config.device)
-
 	loss = config.loss_criterion(result, target)
 	config.optimizer.zero_grad()
 	loss.backward()
