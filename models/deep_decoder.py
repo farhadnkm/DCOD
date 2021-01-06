@@ -43,12 +43,15 @@ class DeepDecoder(nn.Module):
 				out_layer_channels = layers_channels[-1]
 
 			layers.append(Conv2d_pad(layers_channels[i], out_layer_channels, kernel_sizes[i], 1, pad_mode=pad_mode))
-			layers.append(nn.Upsample(scale_factor=2, mode=upsample_mode))
-			layers.append(activation_func)
+			#layers.append(nn.Upsample(scale_factor=2, mode=upsample_mode))
+			if activation_func is not None:
+				layers.append(activation_func)
 			layers.append(nn.BatchNorm2d(out_layer_channels, affine=bn_affine))
+			layers.append(nn.Upsample(scale_factor=2, mode=upsample_mode))
 
 		layers.append(Conv2d_pad(layers_channels[-1], layers_channels[-1], kernel_sizes[-1], 1, pad_mode=pad_mode))
-		layers.append(activation_func)
+		if activation_func is not None:
+			layers.append(activation_func)
 		layers.append(nn.BatchNorm2d(layers_channels[-1], affine=bn_affine))
 
 		layers.append(Conv2d_pad(layers_channels[-1], out_channels, kernel_sizes[-1], 1, pad_mode=pad_mode))
