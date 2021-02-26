@@ -4,7 +4,6 @@ matplotlib.use('TkAgg')
 from matplotlib import pyplot as plt
 import numpy as np
 from numpy.fft import fft2, ifft2, fftshift, ifftshift
-from utils.process import Simulator
 from skimage.metrics import structural_similarity as ssim, peak_signal_noise_ratio as psnr
 
 
@@ -150,24 +149,3 @@ ax2.imshow(img_ph, cmap='viridis', vmin=0, vmax=1)
 ax3.imshow(gt_img_amp, cmap='gray', vmin=0, vmax=1)
 ax4.imshow(gt_img_ph, cmap='viridis', vmin=0, vmax=1)
 plt.show()
-
-""" RBC SSIM compared with MHPR
-30000 iters:
-	amp: 0.5498982938470156
-	ph:  0.8294845548999826
-35000 iters:
-	amp: 0.5255979257550196
-	ph:  0.8279558746422462
-"""
-
-""" RBC holograms
-Adam:
-	PSNR: 32.022479272961405
-	SSIM: 0.9999697240715613
-AdamW:
-	PSNR: 28.440033670170997
-	SSIM: 0.9999318830633466
-AdamWR:
-	PSNR: 31.886596019184875
-	SSIM: 0.9999438316377467
-"""
