@@ -1,10 +1,12 @@
-from PIL import Image
-import matplotlib
-matplotlib.use('TkAgg')
+#import matplotlib
+#matplotlib.use('TkAgg')
 from matplotlib import pyplot as plt
 import numpy as np
-from numpy.fft import fft2, ifft2, fftshift, ifftshift
+from numpy.fft import fft2
 from skimage.metrics import structural_similarity as ssim, peak_signal_noise_ratio as psnr
+from fringe.utils.io import import_image
+from fringe.utils.modifiers import ImageToArray
+from fringe.process.cpu import AngularSpectrumSolver as AsSolver
 
 
 def GTImages(tag="default", *args):
@@ -68,25 +70,11 @@ def GTImages(tag="default", *args):
 				gt_apm_path = 'D:/Research data/results/images/selected/Simulation/test 1/exp(3).png'
 				gt_ph_path = 'D:/Research data/results/images/selected/Simulation/phase.png'
 
-	img_amp = Image.open(amp_path)
-	img_amp = img_amp.convert("L")
-	img_amp = np.array(img_amp).astype("float32")
-	img_amp /= 255
-
-	img_ph = Image.open(ph_path)
-	img_ph = img_ph.convert("L")
-	img_ph = np.array(img_ph).astype("float32")
-	img_ph /= 255
-
-	gt_img_amp = Image.open(gt_apm_path)
-	gt_img_amp = gt_img_amp.convert("L")
-	gt_img_amp = np.array(gt_img_amp).astype("float32")
-	gt_img_amp /= 255
-
-	gt_img_ph = Image.open(gt_ph_path)
-	gt_img_ph = gt_img_ph.convert("L")
-	gt_img_ph = np.array(gt_img_ph).astype("float32")
-	gt_img_ph /= 255
+	p1 = ImageToArray(bit_depth=8, channel='gray', crop_window=None, dtype='float32')
+	img_amp = import_image(path=amp_path, preprocessor=p1)
+	img_ph = import_image(path=ph_path, preprocessor=p1)
+	gt_img_amp = import_image(path=gt_apm_path, preprocessor=p1)
+	gt_img_ph = import_image(path=gt_ph_path, preprocessor=p1)
 
 	return img_amp, img_ph, gt_img_amp, gt_img_ph
 
@@ -130,16 +118,17 @@ def PSE(img):
 	npsd = psd / sum(psd)
 	return -np.sum(npsd * np.log2(npsd))
 
-
+'''
 #img_amp, img_ph, gt_img_amp, gt_img_ph = GTImages("contrast_experiment", "0")
 img_amp, img_ph, gt_img_amp, gt_img_ph = GTImages("blur_experiment", "exp(3)")
 
-#sim = Simulator(np.shape(img_amp), 1.12, 1.12, 5.32e-3)
-#rec = sim.reconstruct(gt_img_amp * np.exp(1j * gt_img_ph))
-#rec_amp = np.abs(rec)
+solver = AsSolver(shape=np.shape(img_amp), dx=1.12, dy=1.12, wavelength=5.32e-3)
+h = gt_img_amp * np.exp(1j * gt_img_ph)
+rec = solver.solve(h, 300)
+rec_amp = np.abs(rec)
 
-#print("NRMS:", NRMS(rec_amp**2, np.ones_like(rec_amp))
-#print("PSE:", PSE(gt_img_amp))
+print("NRMS:", NRMS(rec_amp**2, np.ones_like(rec_amp)))
+print("PSE:", PSE(gt_img_amp))
 print("amplitude:", SSIM(img_amp, gt_img_amp))
 print("phase:", SSIM(img_ph, gt_img_ph))
 
@@ -148,4 +137,4 @@ ax1.imshow(img_amp, cmap='gray', vmin=0, vmax=1)
 ax2.imshow(img_ph, cmap='viridis', vmin=0, vmax=1)
 ax3.imshow(gt_img_amp, cmap='gray', vmin=0, vmax=1)
 ax4.imshow(gt_img_ph, cmap='viridis', vmin=0, vmax=1)
-plt.show()
+plt.show()'''
