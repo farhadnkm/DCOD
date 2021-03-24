@@ -1,5 +1,3 @@
-#import matplotlib
-#matplotlib.use('TkAgg')
 from matplotlib import pyplot as plt
 import numpy as np
 from numpy.fft import fft2
