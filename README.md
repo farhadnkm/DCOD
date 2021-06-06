@@ -2,7 +2,6 @@
 Reconstruct in-line holograms merely with a single image. In the proposed model, a regularized untrained deep neural network inversely generates and optimizes the object field based on the acquired hologram.
 
 Check out our paper and results:
-
 https://www.nature.com/articles/s41598-021-90312-5
 
 All experiments can be found in the **DCOD_Implementation.ipynb**
